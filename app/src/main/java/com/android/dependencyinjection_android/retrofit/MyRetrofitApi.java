@@ -1,4 +1,4 @@
-package com.android.dependencyinjection_android;
+package com.android.dependencyinjection_android.retrofit;
 
 import com.android.dependencyinjection_android.data.Hero;
 

@@ -13,18 +13,25 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.dependencyinjection_android.MyApplication;
 import com.android.dependencyinjection_android.R;
 import com.android.dependencyinjection_android.data.Hero;
-import com.android.dependencyinjection_android.helpers.RetrofitHelper;
+import com.android.dependencyinjection_android.retrofit.MyRetrofitApi;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
+    @Inject
+    Retrofit retrofit; //Annotate retrofit object with @Inject
+    //Note: Dagger does not inject into private variables.
     private RecyclerView mRecyclerView;
     private String[] heroes;
 
@@ -33,13 +40,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ((MyApplication) getApplication()).getApiComponent().inject(this);
+
         mRecyclerView = findViewById(R.id.myRecyclerView);
 
         getHeroes();
     }
 
     private void getHeroes() {
-        Call<List<Hero>> call = RetrofitHelper.getInstance().getApi().getHeroes();
+        Call<List<Hero>> call = retrofit.create(MyRetrofitApi.class).getHeroes(); //Retrofit object injected.
         call.enqueue(new Callback<List<Hero>>() {
             @Override
             public void onResponse(@NonNull Call<List<Hero>> call, @NonNull Response<List<Hero>> response) {
